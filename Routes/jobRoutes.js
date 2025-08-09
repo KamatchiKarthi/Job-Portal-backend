@@ -15,9 +15,9 @@ const JobRouter = require('express').Router();
 
 JobRouter.post('/jobpost/', checkTokenValid, CreateJob);
 
-JobRouter.get('/jobsearch', checkTokenValid, GetallJobs);
+JobRouter.get('/joballsearch', checkTokenValid, GetallJobs);
 
-JobRouter.get('/jobsearch', checkTokenValid, GetjobId);
+JobRouter.get('/jobsearch/:id', checkTokenValid, GetjobId);
 
 JobRouter.put('/updatejob', checkTokenValid, Updatejob);
 

@@ -188,7 +188,7 @@ async function UpdateapplicationStatus(req, res) {
 
 async function checkApplication(req, res) {
   try {
-    const jobId  = req.params.id
+    const jobId = req.params.id;
 
     if (!jobId) {
       return res.status(400).json({
