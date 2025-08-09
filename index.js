@@ -13,7 +13,7 @@ const UserRoutes = require('./Routes/userRoutes');
 
 const connectionDB = require('./configer/db');
 const server_config = {
-  port: 5001,
+  port: 5000,
   hostname: 'localhost',
 };
 // database connection
