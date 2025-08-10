@@ -11,11 +11,15 @@ const CompanyRouter = require('./Routes/companyRoutes');
 const applicationsRoute = require('./Routes/applicationsRoutes');
 const UserRoutes = require('./Routes/userRoutes');
 
+require('dotenv').config();
+const port = process.env.port || 5000;
+const hostname = process.env.hostname || 'localhost';
+
 const connectionDB = require('./configer/db');
-const server_config = {
-  port: 5000,
-  hostname: 'localhost',
-};
+// const server_config = {
+//   port: 5000,
+//   hostname: 'localhost',
+// };
 // database connection
 connectionDB();
 
@@ -50,12 +54,10 @@ app.use('/application', applicationsRoute);
 app.use('/upload', UserRoutes);
 
 // app.use('/api/auth', )
-app.listen(server_config.port, server_config.hostname, error => {
+app.listen(port, hostname, error => {
   if (error) {
     console.log(error);
   } else {
-    console.log(
-      `Server started :  http://${server_config.hostname}:${server_config.port}/`
-    );
+    console.log(`Server started :  http://${hostname}:${port}/`);
   }
 });
