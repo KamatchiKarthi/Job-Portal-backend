@@ -73,7 +73,53 @@ async function Login(req, res) {
   }
 }
 
+async function getMe(req, res) {
+  try {
+    const userId = await User.findById(req.user._id);
+    res.status(200).json({
+      success: true,
+      message: 'user authticated',
+      user: userId,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'error fetching your data',
+      error: error.message,
+    });
+  }
+}
+
+async function updateProfile(req, res) {
+  const { name, email, password, experience, education, skills } = req.body;
+  try {
+    const userID = req.user._id;
+
+    const user = await User.findByIdAndUpdate(userID, {
+      name,
+      email,
+      password,
+      experience,
+      education,
+      skills,
+    });
+
+    res.status(200).json({
+      success: true,
+      message: 'profile updated sucessfully',
+      user: user,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'error updating profile',
+      error: error.message,
+    });
+  }
+}
 module.exports = {
   register,
   Login,
+  getMe,
+  updateProfile
 };
