@@ -23,8 +23,13 @@ const connectionDB = require('./configer/db');
 // database connection
 connectionDB();
 
+const corsOptions = {
+  origin: 'http://localhost:5000/',
+  optionsSuccessStatus: 200,
+};
+
 //middleware connections
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
