@@ -43,7 +43,11 @@ app.use(express.urlencoded({ extended: true }));
 // test();
 
 app.get('/', (req, res) => {
-  res.send('job portal api is running');
+  res.json({
+    success: true,
+    message: 'job portal api is running',
+    time: new Date().toISOString,
+  });
 });
 
 // Routes
