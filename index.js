@@ -13,7 +13,7 @@ const UserRoutes = require('./Routes/userRoutes');
 
 require('dotenv').config();
 const port = process.env.port || 5000;
-const hostname = 'localhost';
+const hostname = process.env.hostname || 'localhost';
 
 const connectionDB = require('./configer/db');
 // const server_config = {
@@ -69,6 +69,6 @@ app.listen(port, hostname, error => {
   if (error) {
     console.log(error);
   } else {
-    console.log(`Server started :  http://localhost:${port}/`);
+    console.log(`Server started :  http://${process.env.hostname}:${port}/`);
   }
 });

@@ -4,7 +4,7 @@ const { createtoken } = require('../configer/jwt');
 const bcrypt = require('bcryptjs');
 
 async function register(req, res) {
-  const { email} = req.body;
+  const { email } = req.body;
   try {
     let Matchinguser = await User.findOne({ email });
     if (Matchinguser) {
@@ -73,15 +73,13 @@ async function Login(req, res) {
   }
 }
 
-
-
-async function  getMe(req, res) {
+async function getMe(req, res) {
   try {
     // Check if auth middleware set req.user
     if (!req.user || !req.user.id) {
       return res.status(401).json({
         success: false,
-        message: "User not authenticated",
+        message: 'User not authenticated',
       });
     }
 
@@ -91,23 +89,23 @@ async function  getMe(req, res) {
     if (!user) {
       return res.status(404).json({
         success: false,
-        message: "User not found",
+        message: 'User not found',
       });
     }
 
     res.status(200).json({
       success: true,
-      message: "User authenticated",
+      message: 'User authenticated',
       user,
     });
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: "Error fetching your data",
+      message: 'Error fetching your data',
       error: error.message,
     });
   }
-};
+}
 
 async function updateProfile(req, res) {
   const { name, email, password, experience, education, skills } = req.body;
@@ -140,5 +138,5 @@ module.exports = {
   register,
   Login,
   getMe,
-  updateProfile
+  updateProfile,
 };
