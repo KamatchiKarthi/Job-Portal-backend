@@ -24,6 +24,12 @@ async function register(req, res) {
         message: 'account created successfully',
         success: true,
         token,
+        user: {
+          _id: result._id,
+          name: result.name,
+          eamil: result.email,
+          role: result.role,
+        },
       });
     } else {
       throw new Error('account creation failed');
@@ -39,7 +45,7 @@ async function register(req, res) {
 }
 
 async function Login(req, res) {
-  const { name, email, password, role } = req.body;
+  const { email, password } = req.body;
   try {
     let Matchinguser = await User.findOne({ email });
 
