@@ -12,8 +12,8 @@ const applicationsRoute = require('./Routes/applicationsRoutes');
 const UserRoutes = require('./Routes/userRoutes');
 
 require('dotenv').config();
-const port = process.env.port ;
-const hostname = process.env.hostname ;
+const port = process.env.port  || 5002;
+const hostname = process.env.hostname  || 'localhost';
 
 const connectionDB = require('./configer/db');
 // const server_config = {
