@@ -13,7 +13,7 @@ const UserRoutes = require('./Routes/userRoutes');
 
 require('dotenv').config();
 const port = process.env.port || 5000;
-const hostname = process.env.hostname || 'localhost';
+const hostname = 'localhost';
 
 const connectionDB = require('./configer/db');
 // const server_config = {
@@ -24,8 +24,10 @@ const connectionDB = require('./configer/db');
 connectionDB();
 
 const corsOptions = {
-  origin: 'http://localhost:5000/',
+  origin: 'http://localhost:5173',
   optionsSuccessStatus: 200,
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  credentials: true,
 };
 
 //middleware connections
@@ -67,6 +69,6 @@ app.listen(port, hostname, error => {
   if (error) {
     console.log(error);
   } else {
-    console.log(`Server started :  http://${hostname}:${port}/`);
+    console.log(`Server started :  http://localhost:${port}/`);
   }
 });

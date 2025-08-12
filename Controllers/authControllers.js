@@ -4,7 +4,7 @@ const { createtoken } = require('../configer/jwt');
 const bcrypt = require('bcryptjs');
 
 async function register(req, res) {
-  const { name, email, password, role } = req.body;
+  const { email} = req.body;
   try {
     let Matchinguser = await User.findOne({ email });
     if (Matchinguser) {
@@ -73,22 +73,41 @@ async function Login(req, res) {
   }
 }
 
-async function getMe(req, res) {
+
+
+async function  getMe(req, res) {
   try {
-    const userId = await User.findById(req.user._id);
+    // Check if auth middleware set req.user
+    if (!req.user || !req.user.id) {
+      return res.status(401).json({
+        success: false,
+        message: "User not authenticated",
+      });
+    }
+
+    // Find user by the id from token payload
+    const user = await User.findById(req.user.id).select('-password');
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
     res.status(200).json({
       success: true,
-      message: 'user authticated',
-      user: userId,
+      message: "User authenticated",
+      user,
     });
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: 'error fetching your data',
+      message: "Error fetching your data",
       error: error.message,
     });
   }
-}
+};
 
 async function updateProfile(req, res) {
   const { name, email, password, experience, education, skills } = req.body;
