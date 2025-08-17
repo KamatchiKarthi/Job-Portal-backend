@@ -29,7 +29,7 @@ const PORT = process.env.PORT || 5002;
 connectionDB();
 
 // Allowed origins for CORS
-const allowedOrigins = [process.env.FRONTEND_URL];
+const allowedOrigins = [process.env.FRONTEND_URL ,process.env.FRONTEND_URL1 ];
 
 const corsOptions = {
   origin: function (origin, callback) {
