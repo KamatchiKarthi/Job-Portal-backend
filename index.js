@@ -24,14 +24,14 @@ const connectionDB = require('./configer/db');
 
 // App config
 const app = express();
-const port = process.env.port || 5002;
-const hostname = process.env.hostname || 'localhost';
+const PORT = process.env.PORT || 5002;
+const HOSTNMAE = process.env.HOSTNMAE || 'localhost';
 
 // Connect DB
 connectionDB();
 
 // Allowed origins for CORS
-const allowedOrigins = ['https://quiet-biscotti-567f40.netlify.app/'];
+const allowedOrigins = [process.env.FRONTEND_URL];
 
 const corsOptions = {
   origin: function (origin, callback) {
@@ -72,10 +72,10 @@ app.use('/upload', UserRoutes);
 app.use('/password', PasswordRouter);
 
 // Start server
-app.listen(port, hostname, error => {
+app.listen(PORT, HOSTNMAE, error => {
   if (error) {
     console.error(error);
   } else {
-    console.log(` Server started: http://${hostname}:${port}/`);
+    console.log(` Server started: http://${HOSTNMAE}:${PORT}/`);
   }
 });
