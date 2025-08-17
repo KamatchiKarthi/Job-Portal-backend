@@ -1,5 +1,4 @@
 // server.js
-
 require('dotenv').config();
 const express = require('express');
 const path = require('path');
@@ -35,17 +34,17 @@ const allowedOrigins = [process.env.FRONTEND_URL];
 
 const corsOptions = {
   origin: function (origin, callback) {
-    // allow requests with no origin (Postman, mobile apps)
-    if (!origin) return callback(null, true);
-    if (allowedOrigins.includes(origin)) {
+    if (!origin) return callback(null, true); // Postman or server-to-server
+    const cleanOrigin = origin.replace(/\/$/, ''); // remove trailing slash
+    if (allowedOrigins.includes(cleanOrigin)) {
       callback(null, true);
     } else {
-      callback(new Error('Not allowed by CORS'));
+      callback(new Error('Not allowed by CORS: ' + origin));
     }
   },
-  methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE', 'OPTIONS'], // include OPTIONS
-  credentials: true, // allow cookies/auth headers
-  optionsSuccessStatus: 204, // standard for preflight
+  methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE', 'OPTIONS'],
+  credentials: true,
+  optionsSuccessStatus: 204,
 };
 
 // Middleware
@@ -58,18 +57,18 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Test route
 app.get('/', (req, res) => {
-try {
+  try {
     res.json({
-    success: true,
-    message: 'Job portal API is running',
-    time: new Date().toISOString(),
-  });
-} catch (error) {
-  res.json({
-    success : false,
-    message : 'Job API error'
-  })
-}
+      success: true,
+      message: 'Job portal API is running',
+      time: new Date().toISOString(),
+    });
+  } catch (error) {
+    res.json({
+      success: false,
+      message: 'Job API error',
+    });
+  }
 });
 
 // API Routes
