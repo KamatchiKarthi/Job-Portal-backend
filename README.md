@@ -1,7 +1,3 @@
-Perfect! Based on the backend routes and controllers you shared, here’s a **comprehensive README** for your Job Portal backend project:
-
----
-
 # Job Portal Backend
 
 This is the backend for the **Job Portal** application. It provides RESTful APIs for user authentication, job management, applications, company profiles, and file uploads. Built with **Node.js**, **Express**, and **MongoDB**.
