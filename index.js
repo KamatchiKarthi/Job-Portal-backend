@@ -31,7 +31,7 @@ const hostname = process.env.hostname || 'localhost';
 connectionDB();
 
 // Allowed origins for CORS
-const allowedOrigins = ['http://localhost:5174'];
+const allowedOrigins = ['https://quiet-biscotti-567f40.netlify.app/'];
 
 const corsOptions = {
   origin: function (origin, callback) {
