@@ -11,7 +11,7 @@ const User = require('./models/Users');
 const Job = require('./models/Job');
 const Company = require('./models/Company');
 
-// Routes
+// Route
 const authenticationRouter = require('./Routes/authRoutes');
 const JobRouter = require('./Routes/jobRoutes');
 const CompanyRouter = require('./Routes/companyRoutes');
