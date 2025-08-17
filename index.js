@@ -25,7 +25,7 @@ const connectionDB = require('./configer/db');
 // App config
 const app = express();
 const PORT = process.env.PORT || 5002;
-const HOSTNMAE = process.env.HOSTNMAE || 'localhost';
+const HOSTNAME = process.env.HOSTNAME ;
 
 // Connect DB
 connectionDB();
@@ -74,10 +74,10 @@ app.use('/upload', UserRoutes);
 app.use('/password', PasswordRouter);
 
 // Start server
-app.listen(PORT, HOSTNMAE, error => {
+app.listen(PORT, HOSTNAME, error => {
   if (error) {
     console.error(error);
   } else {
-    console.log(` Server started: http://${HOSTNMAE}:${PORT}/`);
+    console.log(` Server started: http://${HOSTNAME}:${PORT}/`);
   }
 });
