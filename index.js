@@ -25,7 +25,7 @@ const connectionDB = require('./configer/db');
 // App config
 const app = express();
 const PORT = process.env.PORT || 5002;
-const HOSTNAME = process.env.HOSTNAME ;
+const HOSTNAME = process.env.HOSTNAME;
 
 // Connect DB
 connectionDB();
@@ -58,11 +58,18 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Test route
 app.get('/', (req, res) => {
-  res.json({
+try {
+    res.json({
     success: true,
     message: 'Job portal API is running',
     time: new Date().toISOString(),
   });
+} catch (error) {
+  res.json({
+    success : false,
+    message : 'Job API error'
+  })
+}
 });
 
 // API Routes
