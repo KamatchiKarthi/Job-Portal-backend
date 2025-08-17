@@ -24,7 +24,6 @@ const connectionDB = require('./configer/db');
 // App config
 const app = express();
 const PORT = process.env.PORT || 5002;
-const HOSTNAME = process.env.HOSTNAME;
 
 // Connect DB
 connectionDB();
@@ -49,6 +48,7 @@ const corsOptions = {
 
 // Middleware
 app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -80,10 +80,6 @@ app.use('/upload', UserRoutes);
 app.use('/password', PasswordRouter);
 
 // Start server
-app.listen(PORT, HOSTNAME, error => {
-  if (error) {
-    console.error(error);
-  } else {
-    console.log(` Server started: http://${HOSTNAME}:${PORT}/`);
-  }
+app.listen(PORT, () => {
+  console.log(`Server started on port ${PORT}`);
 });
