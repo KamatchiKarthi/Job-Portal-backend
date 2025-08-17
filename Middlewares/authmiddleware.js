@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const { SECRET_KEY } = require('../configer/jwt');
+// const { SECRET_KEY } = require('../configer/jwt');
 
 function checkTokenValid(req, res, next) {
   try {
@@ -10,8 +10,8 @@ function checkTokenValid(req, res, next) {
         message: 'authorization header missing',
       });
     }
-
-    const decoded = jwt.verify(token, SECRET_KEY);
+    const actualToken = token.startsWith('Bearer ') ? token.slice(7) : token;
+    const decoded = jwt.verify(actualToken, process.env.SECRET_KEY);
     req.user = decoded.user;
     next();
   } catch (error) {

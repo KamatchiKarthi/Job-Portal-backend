@@ -1,5 +1,5 @@
 const { application } = require('express');
-const Job = require('../Utilies/recommandation');
+const Job = require('../models/Job');
 const User = require('../models/Users');
 
 async function RecommendedJob(userID) {
@@ -9,7 +9,7 @@ async function RecommendedJob(userID) {
       return [];
     }
     const Skillbased = await Job.find({
-      requirements: { $in: user.profile.skills },
+      requirements: { $in: user.profile.skills.map(s => s.toLowerCase()) },
       applicants: { $ne: userID },
     })
       .limit(10)
@@ -17,12 +17,10 @@ async function RecommendedJob(userID) {
 
     let IndustryBasedjobs = [];
     if (user.profile.experience?.length > 0) {
-      const industries = user.profile.experience.map(exp => {
-        exp.title.toLowerCase();
-      });
+      const industries = user.profile.experience.map(exp => 
+        exp.title.toLowerCase());
       IndustryBasedjobs = await Job.find({
         title: { $regex: new RegExp(industries.join('|'), 'i') },
-        _id: { $in: Skillbased.map(j => j._id) },
         applicants: { $ne: userID },
       })
         .limit(10)

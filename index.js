@@ -1,74 +1,81 @@
+// server.js
+
+require('dotenv').config();
 const express = require('express');
-const app = express();
+const path = require('path');
 const cors = require('cors');
+const bcrypt = require('bcryptjs');
+
+// Models
 const User = require('./models/Users');
 const Job = require('./models/Job');
 const Company = require('./models/Company');
-const bcrypt = require('bcryptjs');
-const authticationRouter = require('./Routes/authRoutes');
+
+// Routes
+const authenticationRouter = require('./Routes/authRoutes');
 const JobRouter = require('./Routes/jobRoutes');
 const CompanyRouter = require('./Routes/companyRoutes');
 const applicationsRoute = require('./Routes/applicationsRoutes');
 const UserRoutes = require('./Routes/userRoutes');
+const PasswordRouter = require('./Routes/ResetPasswordRoutes');
 
-require('dotenv').config();
-const port = process.env.port  || 5002;
-const hostname = process.env.hostname  ;
-
+// DB connection
 const connectionDB = require('./configer/db');
-// const server_config = {
-//   port: 5000,
-//   hostname: 'localhost',
-// };
-// database connection
+
+// App config
+const app = express();
+const port = process.env.port || 5002;
+const hostname = process.env.hostname || 'localhost';
+
+// Connect DB
 connectionDB();
 
+// Allowed origins for CORS
+const allowedOrigins = ['http://localhost:5174'];
+
 const corsOptions = {
-  origin: 'http://localhost:5173',
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   optionsSuccessStatus: 200,
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   credentials: true,
 };
 
-//middleware connections
+// Middleware
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// async function test() {
-//   const newUser = new User({
-//     name: 'John Doe',
-//     email: 'john@example.com',
-//     password: 'mypassword123',
-//   });
-//   await newUser.save();
-//   console.log('saved user', newUser);
+// ✅ Serve the uploads folder so files can be accessed directly
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-//   const isMatch = await bcrypt.compare('mypassword123', newUser.password);
-//   console.log('Password matched:', isMatch);
-// }
-// test();
-
+// Test route
 app.get('/', (req, res) => {
   res.json({
     success: true,
-    message: 'job portal api is running',
-    time: new Date().toISOString,
+    message: 'Job portal API is running',
+    time: new Date().toISOString(),
   });
 });
 
-// Routes
-app.use('/api/auth/', authticationRouter);
+// API Routes
+app.use('/api/auth', authenticationRouter);
 app.use('/job', JobRouter);
 app.use('/company', CompanyRouter);
 app.use('/application', applicationsRoute);
 app.use('/upload', UserRoutes);
+app.use('/password', PasswordRouter);
 
-// app.use('/api/auth', )
+// Start server
 app.listen(port, hostname, error => {
   if (error) {
-    console.log(error);
+    console.error(error);
   } else {
-    console.log(`Server started :  http://localhost:${port}/`);
+    console.log(` Server started: http://${hostname}:${port}/`);
   }
 });

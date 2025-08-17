@@ -1,7 +1,7 @@
 const User = require('../models/Users');
 const jwt = require('jsonwebtoken');
 
-const  SECRET_KEY = 'AKR_JOBAPP_AKK';
+// const  SECRET_KEY = 'AKR_JOBAPP_AKK';
 
 function createtoken(id, role) {
   const payload = {
@@ -11,7 +11,7 @@ function createtoken(id, role) {
     },
   }; 
   try {
-    const token = jwt.sign(payload, SECRET_KEY, { expiresIn: '5d', algorithm: 'HS256' });
+    const token = jwt.sign(payload, process.env.SECRET_KEY, { expiresIn: '5d', algorithm: 'HS256' });
     console.log('creating token', payload);
     return token;
   } catch (error) {
@@ -19,4 +19,4 @@ function createtoken(id, role) {
     throw new Error('failed to  genreate authentication token');
   }
 }
-module.exports = { createtoken, SECRET_KEY  };
+module.exports = { createtoken, SECRET_KEY: process.env.SECRET_KEY};

@@ -8,7 +8,7 @@ const  companySchema = new mongoose.Schema({
     location : {type : String},
     industry : {type : String},
     employees : {type : String},
-    users : {type : mongoose.SchemaTypes.ObjectId , ref : 'Users' ,required : true, unique : true},
+    users : {type : mongoose.SchemaTypes.ObjectId , ref : 'user' ,required : true, unique : true},
     createdAt : {type : Date , default : Date.now}
 })
 

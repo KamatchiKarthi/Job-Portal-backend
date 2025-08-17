@@ -1,6 +1,6 @@
 const Job = require('../models/Job');
 const Company = require('../models/Company');
-const Recommendjob = require('../Utilies/recommandation')
+const Recommendjob = require('../Utilies/recommandation');
 
 async function CreateJob(req, res) {
   try {
@@ -20,6 +20,7 @@ async function CreateJob(req, res) {
     res.status(200).json({
       message: 'jobs created',
       success: true,
+      job,
     });
   } catch (error) {
     console.log(error.message);
@@ -32,37 +33,36 @@ async function CreateJob(req, res) {
 
 async function GetallJobs(req, res) {
   try {
-    const { title, location, minsalary, skills } = req.query;
+    const { title, location, minsalary, skills ,jobtype} = req.query;
     const query = {};
 
     if (title) query.title = { $regex: title, $options: 'i' };
+     if (jobtype) query.jobtype = { $regex: jobtype, $options: 'i' }
     if (location) query.location = { $regex: location, $options: 'i' };
-    if (minsalary && !NaN(minsalary)) {
+    if (minsalary && !isNaN(minsalary)) {
       query.salary = { $gte: Number(minsalary) };
     }
+    
     if (skills) query.requirements = { $in: skills.split(',') };
 
     const jobs = await Job.find(query)
       .populate('company', 'name logo')
       .sort('-createdAt');
 
-    if (jobs.length === 0) {
-      return res.status(404).json({
-        success: false,
-        message: 'no jobs found matching search queries',
-        data: [],
-      });
-    }
     res.status(200).json({
       success: true,
-      message: 'fetched searched queries',
-      data: [jobs],
+      message:
+        jobs.length > 0
+          ? 'Fetched searched queries'
+          : 'No jobs found matching search queries',
+      data: [jobs], 
     });
   } catch (error) {
-    console.log(error);
+    console.error(error);
     res.status(500).json({
       success: false,
-      message: 'searching query something wrong',
+      message: 'Searching query something went wrong',
+      data: [],
     });
   }
 }
@@ -93,9 +93,29 @@ async function GetjobId(req, res) {
   }
 }
 
+const GetEmployerJobs = async (req, res) => {
+  try {
+    // Find employer's company
+    const company = await Company.findOne({ users: req.user.id });
+    if (!company) {
+      return res.status(404).json({ success: false, message: 'Company not found' });
+    }
+
+    const jobs = await Job.find({ company: company._id });
+    res.status(200).json({
+      success: true,
+      message: 'Jobs fetched successfully',
+      data: jobs,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ success: false, message: 'Something went wrong' });
+  }
+};
+
 async function Updatejob(req, res) {
   try {
-    let job = await Job.findById(req.body.id);
+    let job = await Job.findById(req.params.id);
 
     if (!job) {
       return res.status(404).json({
@@ -111,7 +131,7 @@ async function Updatejob(req, res) {
       });
     }
 
-    job = await Job.findByIdAndUpdate(req.body.id, req.body, {
+    job = await Job.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
       runValidators: true,
     });
@@ -126,6 +146,7 @@ async function Updatejob(req, res) {
     res.status(500).json({
       success: false,
       message: 'something wrong',
+      error: error.message,
     });
   }
 }
@@ -163,18 +184,19 @@ async function Deletejob(req, res) {
   }
 }
 
-async function Recommendedob(req,res) {
+async function Recommendedob(req, res) {
   try {
     const recommandjob = await Recommendjob(req.user.id);
-  res.status(200).json({
-    messaage : 'recommended job fetched',
-    success : true
-  })
+    res.status(200).json({
+      messaage: 'recommended job fetched',
+      success: true,
+      data: recommandjob,
+    });
   } catch (error) {
     res.status(500).json({
-      messaage : error,
-      success : false
-    })
+      messaage: error,
+      success: false,
+    });
   }
 }
 module.exports = {
@@ -183,5 +205,6 @@ module.exports = {
   GetjobId,
   Updatejob,
   Deletejob,
-  Recommendedob
+  Recommendedob,
+  GetEmployerJobs,
 };

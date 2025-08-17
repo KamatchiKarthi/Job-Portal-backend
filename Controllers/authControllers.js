@@ -69,6 +69,12 @@ async function Login(req, res) {
       message: 'signin successfull',
       success: true,
       token,
+      user: {
+        _id: Matchinguser._id,
+        name: Matchinguser.name,
+        email: Matchinguser.email,
+        role: Matchinguser.role,
+      },
     });
   } catch (error) {
     res.status(500).json({
@@ -114,32 +120,54 @@ async function getMe(req, res) {
 }
 
 async function updateProfile(req, res) {
-  const { name, email, password, experience, education, skills } = req.body;
   try {
-    const userID = req.user._id;
+    const userID = req.user.id;
+    const { name, password, profile } = req.body;
 
-    const user = await User.findByIdAndUpdate(userID, {
+    // Ensure nested objects exist
+    const experience = Array.isArray(profile?.experience)
+      ? profile.experience.map(exp => ({
+          title: exp.title || '',
+          company: exp.company || '',
+          duration: exp.duration || '',
+          description: exp.description || '',
+        }))
+      : [];
+
+    const education = Array.isArray(profile?.education)
+      ? profile.education.map(edu => ({
+          degree: edu.degree || '',
+          institution: edu.institution || '',
+          year: edu.year || '',
+        }))
+      : [];
+
+    const skills = Array.isArray(profile?.skills) ? profile.skills : [];
+
+    const UpdateData = {
       name,
-      email,
-      password,
-      experience,
-      education,
-      skills,
-    });
+      profile: { skills, experience, education },
+    };
+
+    if (password) UpdateData.password = password;
+
+    const user = await User.findByIdAndUpdate(userID, UpdateData, { new: true });
+
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
 
     res.status(200).json({
       success: true,
-      message: 'profile updated sucessfully',
-      user: user,
+      message: 'Profile updated successfully',
+      user,
     });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: 'error updating profile',
-      error: error.message,
-    });
+    res.status(500).json({ success: false, message: 'Error updating profile', error: error.message });
   }
 }
+
+
 module.exports = {
   register,
   Login,

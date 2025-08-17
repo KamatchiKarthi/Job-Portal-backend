@@ -58,7 +58,7 @@ async function getMycompany(req, res) {
     res.status(200).json({
       success: true,
       message: ' succesffully fetched commpany details',
-      company
+      company,
     });
   } catch (error) {
     console.log(error),

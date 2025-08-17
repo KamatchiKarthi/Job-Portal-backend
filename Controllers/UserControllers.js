@@ -2,7 +2,7 @@ const { resumeUploads, profileUploads } = require('../Utilies/fileUploads');
 const Users = require('../models/Users');
 
 async function uploadResume(req, res) {
-  resumeUploads.single("resume")(req, res, async err => {
+  resumeUploads.single('resume')(req, res, async err => {
     if (err) {
       return res.status(400).json({
         message: err,
@@ -16,7 +16,7 @@ async function uploadResume(req, res) {
       });
     }
     try {
-      const resumepath = `/uploads/resume/${req.file.filename}`;
+      const resumepath = `uploads/resume/${req.file.filename.trim()}`;
       const user = await Users.findByIdAndUpdate(
         req.user.id,
         {
@@ -28,6 +28,12 @@ async function uploadResume(req, res) {
         success: true,
         message: 'file uploaded successfully',
         resume: user.profile.resume,
+        user: {
+          id: user._id,
+          name: user.name,
+          email: user.email,
+          profile: user.profile,
+        },
       });
     } catch (error) {
       console.log(error);
@@ -55,7 +61,7 @@ async function uploadProfilepic(req, res) {
     }
 
     try {
-      const profilepath = `/uploads/profilepic/${req.file.filename}`;
+      const profilepath = `/uploads/profilepic/${req.file.filename.trim()}`;
       const user = await Users.findByIdAndUpdate(
         req.user.id,
         { 'profile.profilepicture': profilepath },
@@ -64,7 +70,9 @@ async function uploadProfilepic(req, res) {
       res.status(200).json({
         success: true,
         message: 'profile picuture uploaded',
-        user
+        data: {
+          profilePicture: user.profile.profilepicture,
+        },
       });
     } catch (error) {
       console.log(error);
